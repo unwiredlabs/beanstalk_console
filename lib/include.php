@@ -374,6 +374,14 @@ class Console {
         exit();
     }
 
+    protected function _actionKickAll() {
+        $this->interface->kick($this->_globalVar['tube'], $this->_globalVar['count']);
+        header(
+            sprintf('Location: ./?server=%s', $this->_globalVar['server'])
+        );
+        exit();
+    }
+
     protected function _actionKickJob() {
         $job = $this->interface->_client->peek(intval($_GET['jobid']));
         if ($job) {
