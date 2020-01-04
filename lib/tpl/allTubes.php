@@ -2,6 +2,12 @@
 $fields = $console->getTubeStatFields();
 $groups = $console->getTubeStatGroups();
 $visible = $console->getTubeStatVisible();
+
+if (!@empty($_COOKIE['tubePauseSeconds'])) {
+    $tubePauseSeconds = intval($_COOKIE['tubePauseSeconds']);
+} else {
+    $tubePauseSeconds = 3600;
+}
 ?>
 
 <section id="summaryTable">
@@ -41,6 +47,27 @@ $visible = $console->getTubeStatVisible();
                                 ?>
                                 <td<?php echo $cssClass ?>><?php echo isset($tubeStats[$key]) ? $tubeStats[$key] : '' ?></td>
                             <?php endforeach; ?>
+                            <td>
+                                <a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tubeItem) ?>&action=kickall&count=<?=$tubeStats['current-jobs-buried']?>" title="Kick all the buried jobs">
+                                    <i class="glyphicon glyphicon-forward"></i>
+                                    Kick all
+                                </a>
+                            </td>
+                            <td>
+                                 <?php if (empty($tubeStats['pause-time-left'])): ?>
+                                    <a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tubeItem) ?>&action=pause&count=-1"
+                                       title="Temporarily prevent jobs being reserved from the given tube. Pause for: <?php echo $tubePauseSeconds; ?> seconds">
+                                       <i class="glyphicon glyphicon-pause"></i>
+                                        Pause
+                                    </a>
+                                 <?php else: ?>
+                                    <a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tubeItem) ?>&action=pause&count=0"
+                                       title="<?php echo sprintf('Pause seconds left: %d', $tubeStats['pause-time-left']); ?>">
+                                       <i class="glyphicon glyphicon-play"></i>
+                                    Unpause
+                                    </a>
+                                 <?php endif; ?>
+                            </td>
                         </tr>
                     <?php endforeach ?>
                 </tbody>
